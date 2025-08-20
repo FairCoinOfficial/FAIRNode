@@ -38,7 +38,7 @@ Replace `your_secure_password` with a strong, unique password.
 ### Run the Docker Container
 
 ```sh
-docker run -d -p 40404:40404 -v ~/.faircoin:/root/.faircoin --name faircoin-node faircoin-node
+docker run -d -p 53472:53472 -v ~/.faircoin:/root/.faircoin --name faircoin-node faircoin-node
 ```
 
 This command will run the FairCoin node in a Docker container with the necessary ports exposed and configuration mounted.
