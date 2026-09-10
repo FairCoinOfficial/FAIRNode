@@ -1,0 +1,64 @@
+# FAIRNode - docker-compose examples, one service per role.
+#
+# Each service is gated behind a compose profile so you start exactly the role
+# you want:
+#
+#   docker compose --profile node       up -d
+#   docker compose --profile staker     up -d
+#   docker compose --profile masternode up -d
+#
+# For the masternode profile, copy .env.example to .env and set MN_PRIVKEY and
+# EXTERNAL_IP first.
+
+services:
+  # ---- Role: node (default) -------------------------------------------------
+  faircoin-node:
+    profiles: ["node"]
+    build: .
+    image: faircoin-node
+    container_name: faircoin-node
+    restart: unless-stopped
+    environment:
+      FAIRNODE_ROLE: node
+    ports:
+      - "46372:46372"
+    volumes:
+      - faircoin-data:/home/faircoin/.faircoin
+
+  # ---- Role: staker ---------------------------------------------------------
+  faircoin-staker:
+    profiles: ["staker"]
+    build: .
+    image: faircoin-node
+    container_name: faircoin-staker
+    restart: unless-stopped
+    environment:
+      FAIRNODE_ROLE: staker
+    ports:
+      - "46372:46372"
+    volumes:
+      - faircoin-staker-data:/home/faircoin/.faircoin
+
+  # ---- Role: masternode -----------------------------------------------------
+  # Requires MN_PRIVKEY and EXTERNAL_IP (see .env.example). They are passed
+  # through from .env; the container's entrypoint refuses to start if either is
+  # empty, so validation lives in one place.
+  faircoin-masternode:
+    profiles: ["masternode"]
+    build: .
+    image: faircoin-node
+    container_name: faircoin-masternode
+    restart: unless-stopped
+    environment:
+      FAIRNODE_ROLE: masternode
+      MN_PRIVKEY: ${MN_PRIVKEY:-}
+      EXTERNAL_IP: ${EXTERNAL_IP:-}
+    ports:
+      - "46372:46372"
+    volumes:
+      - faircoin-mn-data:/home/faircoin/.faircoin
+
+volumes:
+  faircoin-data:
+  faircoin-staker-data:
+  faircoin-mn-data:
