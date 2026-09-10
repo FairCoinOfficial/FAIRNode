@@ -1,0 +1,10 @@
+# Operator secrets - never commit. Keep the example template only.
+.env
+.env.*
+!.env.example
+
+# Generated runtime config (contains RPC credentials / masternode key).
+faircoin.conf
+
+# Local data
+*.log
